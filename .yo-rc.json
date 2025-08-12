@@ -1,0 +1,9 @@
+{
+  "generator-teams": {
+    "promptValues": {
+      "developer": "Christopher Øyen"
+    },
+    "libraryName": "teamsArchivePoc",
+    "generator-version": "4.1.0"
+  }
+}
