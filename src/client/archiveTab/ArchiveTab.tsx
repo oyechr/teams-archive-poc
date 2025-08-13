@@ -21,38 +21,34 @@ export const ArchiveTab = () => {
   const [entityId, setEntityId] = useState<string | undefined>();
   const [name, setName] = useState<string>();
   const [error, setError] = useState<string>();
+  const [chats, setChats] = useState<any[]>([]);
 
   useEffect(() => {
-    if (inTeams && context) {
-      authentication
-        .getAuthToken({
+    const run = async () => {
+      try {
+        const ssoToken = await authentication.getAuthToken({
           resources: [process.env.TAB_APP_URI as string],
           silent: false,
-        } as authentication.AuthTokenRequestParameters)
-        .then((token) => {
-          const decoded: { [key: string]: any } = jwtDecode(token) as {
-            [key: string]: any;
-          };
-          setName(decoded!.name);
-          app.notifySuccess();
-        })
-        .catch((message) => {
-          setError(message);
-          app.notifyFailure({
-            reason: app.FailedReason.AuthFailed,
-            message,
-          });
         });
-    } else if (!inTeams) {
-      setEntityId("Not in Microsoft Teams");
-    }
+        const response = await fetch("/api/graph/chats", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: ssoToken }),
+        });
+        if (!response.ok) throw new Error("Failed to fetch chats");
+        const chatsData = await response.json();
+        setChats(chatsData.value || chatsData);
+        app.notifySuccess();
+      } catch (err: any) {
+        setError(err.message || "Error fetching chats");
+        app.notifyFailure({
+          reason: app.FailedReason.AuthFailed,
+          message: err.message || "Error fetching chats",
+        });
+      }
+    };
+    run();
   }, [inTeams, context]);
-
-  useEffect(() => {
-    if (context) {
-      setEntityId(context.page.id);
-    }
-  }, [context]);
 
   /**
    * The render() method to create the UI of the tab

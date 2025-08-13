@@ -11,12 +11,12 @@
     "termsOfUseUrl": "https://{{PUBLIC_HOSTNAME}}/tou.html"
   },
   "name": {
-    "short": "teams archive poc",
-    "full": "teams archive poc"
+    "short": "Archiver",
+    "full": "Teams Chat Archiver"
   },
   "description": {
-    "short": "TODO: add short description here",
-    "full": "TODO: add full description here"
+    "short": "Archive and manage your Teams chats with metadata and JSON preview.",
+    "full": "This app allows users to archive their Teams chats, providing a way to manage chat history with metadata and a JSON preview."
   },
   "icons": {
     "outline": "icon-outline.png",

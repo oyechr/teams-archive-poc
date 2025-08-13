@@ -15,6 +15,7 @@ require("dotenv").config();
 
 // The import of components has to be done AFTER the dotenv config
 import * as allComponents from "./TeamsAppsComponents";
+import { fetchUserChatsOBO } from "./graphObo";
 
 // Create the Express webserver
 const app = express();
@@ -55,6 +56,17 @@ app.use(
     components: allComponents,
   })
 );
+
+// OBO proxy route
+app.post("/api/graph/chats", async (req, res) => {
+  try {
+    const userToken = req.body.token; 
+    const chats = await fetchUserChatsOBO(userToken);
+    res.json(chats);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Set default web page
 app.use(
