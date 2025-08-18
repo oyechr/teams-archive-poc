@@ -376,10 +376,6 @@ export const ArchiveTab = () => {
             />
           )}
         </div>
-
-        <div style={{ marginTop: 24 }}>
-          <Text size={200}>(C) Copyright Christopher Øyen</Text>
-        </div>
       </Card>
     </FluentProvider>
   );
