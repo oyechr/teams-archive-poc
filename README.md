@@ -1,3 +1,86 @@
+
+# Local Development
+
+To run the app locally, follow these steps:
+
+1. **Install dependencies**
+
+   - Run:
+     ```
+     npm install
+     ```
+2. **Set up your .env file**
+
+   - Create a `.env` file in the project root and add your own variables. Example:
+     ```env
+     # The public domain name of where you host your application
+     PUBLIC_HOSTNAME=<your-ngrok-domain>
+
+     # Id of the Microsoft Teams application
+     APPLICATION_ID=<your-app-id>
+     AZURE_AD_CLIENT_SECRET=<your-client-secret>
+     AZURE_AD_TENANT_ID=<your-tenant-id>
+     # Package name of the Microsoft Teams application
+     PACKAGE_NAME=teamsarchivepoc
+
+     # App Id and App Password for the Bot Framework bot
+     MICROSOFT_APP_ID=
+     MICROSOFT_APP_PASSWORD=
+
+     # Port for local debugging
+     PORT=3007
+
+     # Security token for the default outgoing webhook
+     SECURITY_TOKEN=
+
+     # ID of the Outlook Connector
+     CONNECTOR_ID=
+
+     # Application Insights instrumentation key
+     APPINSIGHTS_INSTRUMENTATIONKEY=
+
+     # NGROK configuration for development
+     # NGROK authentication token (leave empty for anonymous)
+     NGROK_AUTH=
+     # NGROK sub domain. ex "myapp" or  (leave empty for random)
+     NGROK_SUBDOMAIN=
+     # NGROK region. (us, eu, au, ap - default is us)
+     NGROK_REGION=
+
+     # Debug settings, default logging "msteams"
+     DEBUG=msteams
+
+     TAB_APP_ID=<your-app-id>
+     TAB_APP_URI=api://<your-ngrok-domain>/<your-app-id>
+     ```
+
+3. **Upload the manifest to Teams**
+
+- Run:
+  ```
+  gulp manifest --no-schema-validation
+  ```
+- This will generate the Teams app manifest package for uploading to Teams.
+4. **Start ngrok tunnel**
+
+   - Replace `<your-ngrok-domain>` with your own ngrok domain.
+   - Example:
+     ```
+     ngrok http --url=<your-ngrok-domain> 3007
+     ```
+     
+5. **In another terminal serve the app locally with gulp**
+
+   - Run:
+     ```
+     gulp serve --debug
+     ```
+
+This will start the local server and expose it via ngrok for Teams integration and testing.
+
+6. **Open the app in your Teams client**
+  - In Microsoft Teams, go to 'Apps' and select your uploaded app to start testing.
+
 # teams archive poc - Microsoft Teams App
 
 Generate a Microsoft Teams application.
@@ -23,7 +106,7 @@ For further details see the [Yo Teams documentation](https://github.com/PnP/gene
 
 The application is built using the `build` Gulp task.
 
-``` bash
+```bash
 npm i -g gulp-cli
 gulp build
 ```
@@ -32,7 +115,7 @@ gulp build
 
 To create the Microsoft Teams Apps manifest, run the `manifest` Gulp task. This will generate and validate the package and finally create the package (a zip file) in the `package` folder. The manifest will be validated against the schema and dynamically populated with values from the `.env` file.
 
-``` bash
+```bash
 gulp manifest
 ```
 
@@ -48,13 +131,13 @@ Configuration is stored in the `.env` file.
 
 To debug and test the solution locally you use the `serve` Gulp task. This will first build the app and then start a local web server on port 3007, where you can test your Tabs, Bots or other extensions. Also this command will rebuild the App if you change any file in the `/src` directory.
 
-``` bash
+```bash
 gulp serve
 ```
 
 To debug the code you can append the argument `debug` to the `serve` command as follows. This allows you to step through your code using your preferred code editor.
 
-``` bash
+```bash
 gulp serve --debug
 ```
 
@@ -86,7 +169,7 @@ To enable logging for the solution you need to add `msteams` to the `DEBUG` envi
 
 Example for Windows command line:
 
-``` bash
+```bash
 SET DEBUG=msteams
 ```
 
