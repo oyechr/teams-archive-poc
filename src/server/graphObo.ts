@@ -27,3 +27,25 @@ export async function fetchUserChatsOBO(userToken: string) {
   });
   return result.data;
 }
+
+export async function fetchChatMessagesOBO(userToken: string, chatId: string) {
+  const graphToken = await getGraphTokenOnBehalfOf(userToken);
+  const result = await axios.get(
+    `https://graph.microsoft.com/v1.0/chats/${chatId}/messages`,
+    {
+      headers: { Authorization: `Bearer ${graphToken}` },
+    }
+  );
+  return result.data;
+}
+
+export async function fetchChatMembersOBO(userToken: string, chatId: string) {
+  const graphToken = await getGraphTokenOnBehalfOf(userToken);
+  const result = await axios.get(
+    `https://graph.microsoft.com/v1.0/chats/${chatId}/members`,
+    {
+      headers: { Authorization: `Bearer ${graphToken}` },
+    }
+  );
+  return result.data;
+}

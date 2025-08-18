@@ -4,6 +4,7 @@ import morgan from "morgan";
 import { MsTeamsApiRouter, MsTeamsPageRouter } from "express-msteams-host";
 import debug from "debug";
 import compression from "compression";
+import axios from "axios";
 
 // Initialize debug logging module
 const log = debug("msteams");
@@ -15,7 +16,11 @@ require("dotenv").config();
 
 // The import of components has to be done AFTER the dotenv config
 import * as allComponents from "./TeamsAppsComponents";
-import { fetchUserChatsOBO } from "./graphObo";
+import {
+  fetchUserChatsOBO,
+  fetchChatMessagesOBO,
+  fetchChatMembersOBO,
+} from "./graphObo";
 
 // Create the Express webserver
 const app = express();
@@ -60,9 +65,49 @@ app.use(
 // OBO proxy route
 app.post("/api/graph/chats", async (req, res) => {
   try {
-    const userToken = req.body.token; 
+    const userToken = req.body.token;
     const chats = await fetchUserChatsOBO(userToken);
     res.json(chats);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+app.post("/api/graph/chats/:chatId/members", async (req, res) => {
+  try {
+    const userToken = req.body.token;
+    const chatId = req.params.chatId;
+    // You need to implement fetchChatMembersOBO
+    const members = await fetchChatMembersOBO(userToken, chatId);
+    res.json(members);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+app.post("/api/graph/chats/:chatId/messages", async (req, res) => {
+  try {
+    const userToken = req.body.token;
+    const chatId = req.params.chatId;
+    // You need to implement fetchChatMessagesOBO
+    const messages = await fetchChatMessagesOBO(userToken, chatId);
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/graph/image", async (req, res) => {
+  const url = req.query.url as string;
+  const token = req.query.token as string;
+  if (!url || !token) {
+    return res.status(400).json({ error: "Missing url or token" });
+  }
+  try {
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: "arraybuffer",
+    });
+    res.set("Content-Type", response.headers["content-type"]);
+    res.send(response.data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
