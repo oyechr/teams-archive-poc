@@ -2,7 +2,7 @@ import * as React from "react";
 import DOMPurify from "dompurify";
 import {
   FluentProvider,
-  webLightTheme,
+  teamsLightTheme,
   Text,
   Title3,
   Card,
@@ -17,6 +17,8 @@ import {
   DataGridCell,
   TableCellLayout,
   Avatar,
+  teamsDarkTheme,
+  teamsHighContrastTheme
 } from "@fluentui/react-components";
 import { PresenceBadgeStatus } from "@fluentui/react-components";
 import { ArchiveSidebar, Metadata } from "./ArchiveSideBar";
@@ -62,6 +64,13 @@ type ChatRow = {
   author: UserCell;
   lastMessage: string;
   archive: string;
+};
+
+const themeMap = {
+  default: teamsLightTheme,
+  light: teamsLightTheme,
+  dark: teamsDarkTheme,
+  contrast: teamsHighContrastTheme,
 };
 export const ArchiveTab = () => {
   const { inTeams, theme, context } = useTeamsContext();
@@ -211,7 +220,7 @@ export const ArchiveTab = () => {
               } else {
                 lastMessage = "No user messages";
               }
-              console.log("Chat ID:", chat.id, "Last Message:", lastMessage);
+              //console.log("Chat ID:", chat.id, "Last Message:", lastMessage);
             }
           }
 
@@ -238,7 +247,7 @@ export const ArchiveTab = () => {
     createTableColumn<ChatRow>({
       columnId: "author",
       compare: (a, b) => a.author.label.localeCompare(b.author.label),
-      renderHeaderCell: () => "Chat Name",
+      renderHeaderCell: () => "Chat",
       renderCell: (item) => (
         <TableCellLayout
           media={
@@ -256,7 +265,7 @@ export const ArchiveTab = () => {
     createTableColumn<ChatRow>({
       columnId: "lastMessage",
       compare: (a, b) => a.lastMessage.localeCompare(b.lastMessage),
-      renderHeaderCell: () => "Last Message",
+      renderHeaderCell: () => "Latest Message",
       renderCell: (item) => (
         <span
           style={{
@@ -302,7 +311,7 @@ export const ArchiveTab = () => {
    * The render() method to create the UI of the tab
    */
   return (
-    <FluentProvider theme={webLightTheme}>
+    <FluentProvider theme={themeMap[theme] || teamsLightTheme}>
       <Card>
         <CardHeader header={<Title3>Teams Chat Archive</Title3>} />
         <div>

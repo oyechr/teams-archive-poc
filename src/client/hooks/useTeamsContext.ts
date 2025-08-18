@@ -15,6 +15,9 @@ export function useTeamsContext() {
           setContext(ctx);
           setTheme(ctx.app.theme || "default");
         });
+        app.registerOnThemeChangeHandler((theme) => {
+          setTheme(theme || "default");
+        });
       })
       .catch(() => {
         setInTeams(false);
