@@ -18,7 +18,7 @@ import {
   TableCellLayout,
   Avatar,
   teamsDarkTheme,
-  teamsHighContrastTheme
+  teamsHighContrastTheme,
 } from "@fluentui/react-components";
 import { PresenceBadgeStatus } from "@fluentui/react-components";
 import { ArchiveSidebar, Metadata } from "./ArchiveSideBar";
@@ -74,8 +74,6 @@ const themeMap = {
 };
 export const ArchiveTab = () => {
   const { inTeams, theme, context } = useTeamsContext();
-  const [entityId, setEntityId] = useState<string | undefined>();
-  const [name, setName] = useState<string>();
   const [error, setError] = useState<string>();
   const [chats, setChats] = useState<any[]>([]);
   const [archivedChats, setArchivedChats] = useState<string[]>([]);
@@ -124,8 +122,6 @@ export const ArchiveTab = () => {
   useEffect(() => {
     if (chats.length === 0 || !context || !userId) return;
     const fetchDetails = async () => {
-      // Use ssoToken from state
-
       const details: Record<
         string,
         { name: string; lastMessage: string; presence: PresenceBadgeStatus }
@@ -146,7 +142,7 @@ export const ArchiveTab = () => {
           let presence: PresenceBadgeStatus = "unknown";
           if (membersRes.ok) {
             const membersData = await membersRes.json();
-            // For one-on-one, show the other person's name
+
             if (
               chat.chatType === "oneOnOne" &&
               Array.isArray(membersData.value)
@@ -196,7 +192,6 @@ export const ArchiveTab = () => {
               Array.isArray(messagesData.value) &&
               messagesData.value.length > 0
             ) {
-              // Filter out system messages
               const validMessages = messagesData.value.filter(
                 (msg: any) =>
                   msg.messageType === "message" &&
@@ -204,7 +199,6 @@ export const ArchiveTab = () => {
                   msg.body.content !== "<systemEventMessage/>"
               );
               if (validMessages.length > 0) {
-                // Find the message with the latest createdDateTime
                 const latestMsg = validMessages.reduce(
                   (latest: any, msg: any) => {
                     if (!latest) return msg;
@@ -378,6 +372,7 @@ export const ArchiveTab = () => {
               onMetadataChange={(meta) =>
                 setMetadata((prev) => ({ ...prev, [selectedChatId]: meta }))
               }
+              theme={theme}
             />
           )}
         </div>

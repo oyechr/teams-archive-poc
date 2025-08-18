@@ -25,6 +25,7 @@ type ArchiveSidebarProps = {
   chatHistory: any[];
   metadata: Metadata;
   onMetadataChange: (meta: Metadata) => void;
+  theme?: string;
 };
 
 export const ArchiveSidebar: React.FC<ArchiveSidebarProps> = ({
@@ -34,6 +35,7 @@ export const ArchiveSidebar: React.FC<ArchiveSidebarProps> = ({
   chatHistory,
   metadata,
   onMetadataChange,
+  theme = "default",
 }) => {
   const [tab, setTab] = React.useState("metadata");
 
@@ -116,12 +118,19 @@ export const ArchiveSidebar: React.FC<ArchiveSidebarProps> = ({
             padding: "16px",
             maxHeight: "60vh",
             overflowY: "scroll",
-            background: "#f3f3f3",
+            background:
+              theme === "dark" || theme === "contrast"
+                ? "#222"
+                : "#f3f3f3",
+            color:
+              theme === "dark" || theme === "contrast"
+                ? "#f3f3f3"
+                : "#222",
             borderRadius: "4px",
             fontSize: "14px",
             width: "100%",
             boxSizing: "border-box",
-            scrollbarWidth: "thin", 
+            scrollbarWidth: "thin",
           }}
         >
           {JSON.stringify(
