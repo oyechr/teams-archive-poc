@@ -22,6 +22,7 @@ import {
 } from "@fluentui/react-components";
 import { PresenceBadgeStatus } from "@fluentui/react-components";
 import { ArchiveSidebar, Metadata } from "./ArchiveSideBar";
+import { Threads } from "./Threads";
 
 type UserCell = {
   label: string;
@@ -307,7 +308,7 @@ export const ArchiveTab = () => {
   return (
     <FluentProvider theme={themeMap[theme] || teamsLightTheme}>
       <Card>
-        <CardHeader header={<Title3>Teams Chat Archive</Title3>} />
+        <CardHeader header={<Title3>Chats</Title3>} />
         <div>
           {error && (
             <div>
@@ -316,8 +317,7 @@ export const ArchiveTab = () => {
           )}
           <div style={{ marginBottom: 12 }}>
             <Text>
-              View and select which chats you want to archive. Only user
-              messages are shown in preview.
+              View and select which chats you want to archive.
             </Text>
           </div>
         </div>
@@ -376,6 +376,9 @@ export const ArchiveTab = () => {
             />
           )}
         </div>
+      </Card>
+      <Card style={{ flex: 1, minWidth: 400 }}>
+        <Threads threads={archivedChats} />
       </Card>
     </FluentProvider>
   );

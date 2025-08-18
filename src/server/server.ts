@@ -4,16 +4,21 @@ import morgan from "morgan";
 import { MsTeamsApiRouter, MsTeamsPageRouter } from "express-msteams-host";
 import debug from "debug";
 import compression from "compression";
-import axios from "axios";
+import { CloudAdapter  } from "botbuilder";
+import { ArchiveMessagingExtensionBot } from "./ArchiveMessagingExtension";
 
 // Initialize debug logging module
 const log = debug("msteams");
-
+const archivedThreads: any[] = [];
 log("Initializing Microsoft Teams Express hosted App...");
 
 // Initialize dotenv, to use .env file settings if existing
 require("dotenv").config();
 
+
+const adapter = new CloudAdapter();
+
+const bot = new ArchiveMessagingExtensionBot();
 // The import of components has to be done AFTER the dotenv config
 import * as allComponents from "./TeamsAppsComponents";
 import {
@@ -63,6 +68,25 @@ app.use(
   })
 );
 
+// Endpoint for Teams bot activities
+app.post("/api/messages", async (req, res) => {
+  await adapter.process(req, res, async (context) => {
+    await bot.run(context);
+  });
+});
+
+// Endpoint to mark a thread for archive (called by bot)
+app.post("/api/markForArchive", async (req, res) => {
+  const { messagePayload } = req.body;
+  archivedThreads.push(messagePayload); // Store in memory
+  res.json({ status: "success" });
+});
+
+// Endpoint for ArchiveTab to fetch archived threads
+app.get("/api/archivedThreads", (req, res) => {
+  res.json(archivedThreads);
+});
+
 // OBO proxy route
 app.post("/api/graph/chats", async (req, res) => {
   try {
@@ -102,6 +126,14 @@ app.post("/api/graph/users/:userId/presence", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+app.post("/api/markForArchive", async (req, res) => {
+  const { messagePayload } = req.body;
+  // Store the thread/message in database or in-memory store?
+  // For poc, just log and return success
+  console.log("Marked for archive:", messagePayload);
+  // TODO: Save to persistent storage
+  res.json({ status: "success" });
 });
 
 app.use(
