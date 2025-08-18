@@ -21,7 +21,7 @@ import {
 import { PresenceBadgeStatus } from "@fluentui/react-components";
 import { ArchiveSidebar, Metadata } from "./ArchiveSideBar";
 
-type AuthorCell = {
+type UserCell = {
   label: string;
   status: PresenceBadgeStatus;
 };
@@ -59,7 +59,7 @@ function mapPresenceToBadgeStatus(presence: string): PresenceBadgeStatus {
 }
 type ChatRow = {
   rowId: string;
-  author: AuthorCell;
+  author: UserCell;
   lastMessage: string;
   archive: string;
 };
@@ -148,13 +148,11 @@ export const ArchiveTab = () => {
               name = other?.displayName || other?.email || "Unknown";
               if (other?.userId) {
                 const presenceRes = await fetch(
-                  `https://graph.microsoft.com/v1.0/users/${other.userId}/presence`,
+                  `/api/graph/users/${other.userId}/presence`,
                   {
-                    method: "GET",
-                    headers: {
-                      Authorization: `Bearer ${ssoToken}`,
-                      "Content-Type": "application/json",
-                    },
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ token: ssoToken }),
                   }
                 );
                 if (presenceRes.ok) {
@@ -198,10 +196,16 @@ export const ArchiveTab = () => {
               );
               if (validMessages.length > 0) {
                 // Find the message with the latest createdDateTime
-                const latestMsg = validMessages.reduce((latest: any, msg: any) => {
-                  if (!latest) return msg;
-                  return new Date(msg.createdDateTime) > new Date(latest.createdDateTime) ? msg : latest;
-                }, null);
+                const latestMsg = validMessages.reduce(
+                  (latest: any, msg: any) => {
+                    if (!latest) return msg;
+                    return new Date(msg.createdDateTime) >
+                      new Date(latest.createdDateTime)
+                      ? msg
+                      : latest;
+                  },
+                  null
+                );
                 let rawContent = latestMsg.body.content;
                 lastMessage = rawContent.replace(/<img[^>]*>/g, "[image]");
               } else {
@@ -345,7 +349,9 @@ export const ArchiveTab = () => {
               onClose={() => {
                 setSidebarOpen(false);
                 if (selectedChatId && archivedChats.includes(selectedChatId)) {
-                  setArchivedChats((prev) => prev.filter((id) => id !== selectedChatId));
+                  setArchivedChats((prev) =>
+                    prev.filter((id) => id !== selectedChatId)
+                  );
                 }
                 setSelectedChatId(null);
               }}

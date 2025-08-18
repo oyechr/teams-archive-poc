@@ -49,3 +49,14 @@ export async function fetchChatMembersOBO(userToken: string, chatId: string) {
   );
   return result.data;
 }
+
+export async function fetchUserPresenceOBO(userToken: string, userId: string) {
+  const graphToken = await getGraphTokenOnBehalfOf(userToken);
+  const result = await axios.get(
+    `https://graph.microsoft.com/v1.0/users/${userId}/presence`,
+    {
+      headers: { Authorization: `Bearer ${graphToken}` },
+    }
+  );
+  return result.data;
+}

@@ -20,6 +20,7 @@ import {
   fetchUserChatsOBO,
   fetchChatMessagesOBO,
   fetchChatMembersOBO,
+  fetchUserPresenceOBO,
 } from "./graphObo";
 
 // Create the Express webserver
@@ -76,7 +77,6 @@ app.post("/api/graph/chats/:chatId/members", async (req, res) => {
   try {
     const userToken = req.body.token;
     const chatId = req.params.chatId;
-    // You need to implement fetchChatMembersOBO
     const members = await fetchChatMembersOBO(userToken, chatId);
     res.json(members);
   } catch (err) {
@@ -87,33 +87,23 @@ app.post("/api/graph/chats/:chatId/messages", async (req, res) => {
   try {
     const userToken = req.body.token;
     const chatId = req.params.chatId;
-    // You need to implement fetchChatMessagesOBO
     const messages = await fetchChatMessagesOBO(userToken, chatId);
     res.json(messages);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-
-app.get("/api/graph/image", async (req, res) => {
-  const url = req.query.url as string;
-  const token = req.query.token as string;
-  if (!url || !token) {
-    return res.status(400).json({ error: "Missing url or token" });
-  }
+app.post("/api/graph/users/:userId/presence", async (req, res) => {
   try {
-    const response = await axios.get(url, {
-      headers: { Authorization: `Bearer ${token}` },
-      responseType: "arraybuffer",
-    });
-    res.set("Content-Type", response.headers["content-type"]);
-    res.send(response.data);
+    const userToken = req.body.token;
+    const userId = req.params.userId;
+    const presence = await fetchUserPresenceOBO(userToken, userId);
+    res.json(presence);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Set default web page
 app.use(
   "/",
   express.static(path.join(__dirname, "web/"), {

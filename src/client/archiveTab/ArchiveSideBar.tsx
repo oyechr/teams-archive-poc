@@ -67,8 +67,6 @@ export const ArchiveSidebar: React.FC<ArchiveSidebarProps> = ({
       {tab === "metadata" && (
         <div
           style={{
-            //maxWidth: "400px",
-            
             padding: "16px",
             display: "flex",
             flexDirection: "column",
@@ -106,7 +104,7 @@ export const ArchiveSidebar: React.FC<ArchiveSidebarProps> = ({
             onChange={(_, v) => handleChange("senderRecipient", v.value)}
             placeholder="Sender/Recipient"
           />
-          <Button style={{ alignSelf: "flex-end" }} onClick={onClose}>
+          <Button appearance="primary" style={{ alignSelf: "flex-end" }} onClick={onClose}>
             Save & Archive
           </Button>
         </div>
