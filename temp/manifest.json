@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.15/MicrosoftTeams.schema.json",
   "manifestVersion": "1.15",
-  "id": "e2af70e4-e665-42c2-acee-857b8cf6ef9a",
-  "version": "0.0.1",
+  "id": "79b4a6ff-2517-4f02-b70e-ef31ab65677b",
+  "version": "1.0",
   "packageName": "teamsarchivepoc",
   "developer": {
     "name": "Christopher Øyen",
@@ -34,17 +34,25 @@
       ]
     }
   ],
-  "bots": [],
+  "bots": [
+    {
+    "botId": "79b4a6ff-2517-4f02-b70e-ef31ab65677b",
+    "scopes": ["personal", "team", "groupchat"],
+    "supportsFiles": true,
+    "isNotificationOnly": false
+  }
+  ],
   "connectors": [],
   "composeExtensions": [
   {
-    "botId": "e2af70e4-e665-42c2-acee-857b8cf6ef9a",
+    "botId": "79b4a6ff-2517-4f02-b70e-ef31ab65677b",
     "canUpdateConfiguration": false,
     "commands": [
       {
         "id": "markForArchive",
         "type": "action",
         "title": "Flag for Archive",
+        "context": ["message"],
         "description": "Send this message thread to the Archive app",
         "fetchTask": false
       }
@@ -60,7 +68,7 @@
   ],
   "showLoadingIndicator": true,
   "webApplicationInfo": {
-    "id": "e2af70e4-e665-42c2-acee-857b8cf6ef9a",
-    "resource": "api://eagerly-expert-jaybird.ngrok-free.app/e2af70e4-e665-42c2-acee-857b8cf6ef9a"
+    "id": "79b4a6ff-2517-4f02-b70e-ef31ab65677b",
+    "resource": "api://eagerly-expert-jaybird.ngrok-free.app/79b4a6ff-2517-4f02-b70e-ef31ab65677b"
   }
 }

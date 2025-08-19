@@ -4,7 +4,7 @@ import morgan from "morgan";
 import { MsTeamsApiRouter, MsTeamsPageRouter } from "express-msteams-host";
 import debug from "debug";
 import compression from "compression";
-import { CloudAdapter  } from "botbuilder";
+import { CloudAdapter, ConfigurationBotFrameworkAuthentication  } from "botbuilder";
 import { ArchiveMessagingExtensionBot } from "./ArchiveMessagingExtension";
 
 // Initialize debug logging module
@@ -15,8 +15,9 @@ log("Initializing Microsoft Teams Express hosted App...");
 // Initialize dotenv, to use .env file settings if existing
 require("dotenv").config();
 
+const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication();
 
-const adapter = new CloudAdapter();
+const adapter = new CloudAdapter(botFrameworkAuthentication);
 
 const bot = new ArchiveMessagingExtensionBot();
 // The import of components has to be done AFTER the dotenv config
@@ -70,6 +71,7 @@ app.use(
 
 // Endpoint for Teams bot activities
 app.post("/api/messages", async (req, res) => {
+  console.log("Received POST /api/messages");
   await adapter.process(req, res, async (context) => {
     await bot.run(context);
   });
