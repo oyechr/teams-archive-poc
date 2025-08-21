@@ -16,7 +16,6 @@ const log = debug("msteams");
 const flaggedThreads: any[] = [];
 log("Initializing Microsoft Teams Express hosted App...");
 
-// Initialize dotenv, to use .env file settings if existing
 require("dotenv").config();
 const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
   MicrosoftAppId: process.env.MicrosoftAppId,
@@ -37,8 +36,6 @@ const botFrameworkAuthentication =
 
 const adapter = new CloudAdapter(botFrameworkAuthentication);
 
-
-
 adapter.onTurnError = async (context, error) => {
   console.error(`\n [onTurnError] unhandled error: ${error}`);
   await context.sendTraceActivity(
@@ -47,7 +44,6 @@ adapter.onTurnError = async (context, error) => {
     "https://www.botframework.com/schemas/error",
     "TurnError"
   );
- 
 };
 
 const bot = new ArchiveMessagingExtensionBot();
