@@ -78,6 +78,7 @@ export const ArchiveTab = () => {
   const [error, setError] = useState<string>();
   const [chats, setChats] = useState<any[]>([]);
   const [archivedChats, setArchivedChats] = useState<string[]>([]);
+  const [archivedThreads, setArchivedThreads] = useState<any[]>([]);
   const [chatMessages, setChatMessages] = useState<Record<string, any[]>>({});
   const [chatDetails, setChatDetails] = useState<
     Record<
@@ -90,6 +91,19 @@ export const ArchiveTab = () => {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [metadata, setMetadata] = useState<Record<string, Metadata>>({});
 
+  useEffect(() => {
+    const fetchArchivedThreads = async () => {
+      try {
+        const response = await fetch("/api/archivedThreads");
+        if (!response.ok) throw new Error("Failed to fetch archived threads");
+        const data = await response.json();
+        setArchivedThreads(data);
+      } catch (err) {
+        
+      }
+    };
+    fetchArchivedThreads();
+  }, []);
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -316,9 +330,7 @@ export const ArchiveTab = () => {
             </div>
           )}
           <div style={{ marginBottom: 12 }}>
-            <Text>
-              View and select which chats you want to archive.
-            </Text>
+            <Text>View and select which chats you want to archive.</Text>
           </div>
         </div>
         <div style={{ minWidth: 600 }}>
@@ -378,7 +390,7 @@ export const ArchiveTab = () => {
         </div>
       </Card>
       <Card style={{ flex: 1, minWidth: 400 }}>
-        <Threads threads={archivedChats} />
+        <Threads threads={archivedThreads} />
       </Card>
     </FluentProvider>
   );

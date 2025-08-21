@@ -4,22 +4,54 @@ import morgan from "morgan";
 import { MsTeamsApiRouter, MsTeamsPageRouter } from "express-msteams-host";
 import debug from "debug";
 import compression from "compression";
-import { CloudAdapter, ConfigurationBotFrameworkAuthentication  } from "botbuilder";
+import {
+  CloudAdapter,
+  ConfigurationServiceClientCredentialFactory,
+  createBotFrameworkAuthenticationFromConfiguration,
+} from "botbuilder";
 import { ArchiveMessagingExtensionBot } from "./ArchiveMessagingExtension";
 
 // Initialize debug logging module
 const log = debug("msteams");
-const archivedThreads: any[] = [];
+const flaggedThreads: any[] = [];
 log("Initializing Microsoft Teams Express hosted App...");
 
 // Initialize dotenv, to use .env file settings if existing
 require("dotenv").config();
-
-const botFrameworkAuthentication = new ConfigurationBotFrameworkAuthentication();
+const credentialsFactory = new ConfigurationServiceClientCredentialFactory({
+  MicrosoftAppId: process.env.MicrosoftAppId,
+  MicrosoftAppPassword: process.env.MicrosoftAppPassword,
+  MicrosoftAppTenantId: process.env.AZURE_AD_TENANT_ID,
+});
+const config = {
+  get: <T = unknown>(path?: string[]): T | undefined => {
+    if (!path || path.length === 0) return undefined;
+    return process.env[path[0]] as unknown as T;
+  },
+  set: (path: string[], value: string) => {
+    process.env[path[0]] = value;
+  },
+};
+const botFrameworkAuthentication =
+  createBotFrameworkAuthenticationFromConfiguration(config, credentialsFactory);
 
 const adapter = new CloudAdapter(botFrameworkAuthentication);
 
+
+
+adapter.onTurnError = async (context, error) => {
+  console.error(`\n [onTurnError] unhandled error: ${error}`);
+  await context.sendTraceActivity(
+    "OnTurnError Trace",
+    `${error}`,
+    "https://www.botframework.com/schemas/error",
+    "TurnError"
+  );
+ 
+};
+
 const bot = new ArchiveMessagingExtensionBot();
+
 // The import of components has to be done AFTER the dotenv config
 import * as allComponents from "./TeamsAppsComponents";
 import {
@@ -80,13 +112,13 @@ app.post("/api/messages", async (req, res) => {
 // Endpoint to mark a thread for archive (called by bot)
 app.post("/api/markForArchive", async (req, res) => {
   const { messagePayload } = req.body;
-  archivedThreads.push(messagePayload); // Store in memory
+  flaggedThreads.push(messagePayload); // Store in memory
   res.json({ status: "success" });
 });
 
 // Endpoint for ArchiveTab to fetch archived threads
 app.get("/api/archivedThreads", (req, res) => {
-  res.json(archivedThreads);
+  res.json(flaggedThreads);
 });
 
 // OBO proxy route

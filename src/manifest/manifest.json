@@ -64,7 +64,8 @@
     "messageTeamMembers"
   ],
   "validDomains": [
-    "{{PUBLIC_HOSTNAME}}"
+    "{{PUBLIC_HOSTNAME}}",
+    "token.botframework.com"
   ],
   "showLoadingIndicator": true,
   "webApplicationInfo": {
