@@ -98,9 +98,7 @@ export const ArchiveTab = () => {
         if (!response.ok) throw new Error("Failed to fetch archived threads");
         const data = await response.json();
         setArchivedThreads(data);
-      } catch (err) {
-        
-      }
+      } catch (err) {}
     };
     fetchArchivedThreads();
   }, []);
@@ -119,7 +117,13 @@ export const ArchiveTab = () => {
         });
         if (!response.ok) throw new Error("Failed to fetch chats");
         const chatsData = await response.json();
-        setChats(chatsData.value || chatsData);
+        const filteredChats = (chatsData.value || chatsData)
+          .filter(
+            (chat: any) =>
+              chat.chatType === "oneOnOne" || chat.chatType === "group"
+          )
+          .slice(0, 20);
+        setChats(filteredChats);
         //console.log("Fetched chats:", chatsData.value || chatsData);
         app.notifySuccess();
       } catch (err: any) {
@@ -142,7 +146,7 @@ export const ArchiveTab = () => {
         { name: string; lastMessage: string; presence: PresenceBadgeStatus }
       > = {};
 
-      await Promise.all(
+      await Promise.allSettled(
         chats.map(async (chat) => {
           // Fetch members
           const membersRes = await fetch(
@@ -304,17 +308,26 @@ export const ArchiveTab = () => {
     }),
   ];
 
-  const rows = chats.map((chat) => {
-    let label = chatDetails[chat.id]?.name || "Unknown";
-    let status: PresenceBadgeStatus =
-      chatDetails[chat.id]?.presence || "unknown";
-    return {
-      rowId: chat.id,
-      author: { label, status },
-      lastMessage: chatDetails[chat.id]?.lastMessage || "No messages",
-      archive: chat.id,
-    };
-  });
+  const rows = chats
+    .map((chat) => {
+      let label = chatDetails[chat.id]?.name || "Unknown";
+      let status: PresenceBadgeStatus =
+        chatDetails[chat.id]?.presence || "unknown";
+      let lastMessage = chatDetails[chat.id]?.lastMessage || "No messages";
+      return {
+        rowId: chat.id,
+        author: { label, status },
+        lastMessage,
+        archive: chat.id,
+      };
+    })
+    .filter(
+      (row) =>
+        !(
+          row.author.label === "Unknown" &&
+          row.lastMessage === "No user messages"
+        )
+    );
 
   /**
    * The render() method to create the UI of the tab
@@ -390,7 +403,7 @@ export const ArchiveTab = () => {
         </div>
       </Card>
       <Card style={{ flex: 1, minWidth: 400 }}>
-        <Threads threads={archivedThreads} />
+        <Threads threads={archivedThreads} theme={theme} />
       </Card>
     </FluentProvider>
   );

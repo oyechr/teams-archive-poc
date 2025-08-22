@@ -2,13 +2,13 @@
   "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.15/MicrosoftTeams.schema.json",
   "manifestVersion": "1.15",
   "id": "79b4a6ff-2517-4f02-b70e-ef31ab65677b",
-  "version": "{{VERSION}}",
-  "packageName": "{{PACKAGE_NAME}}",
+  "version": "1.0",
+  "packageName": "teamsarchivepoc",
   "developer": {
     "name": "Christopher Øyen",
-    "websiteUrl": "https://{{PUBLIC_HOSTNAME}}",
-    "privacyUrl": "https://{{PUBLIC_HOSTNAME}}/privacy.html",
-    "termsOfUseUrl": "https://{{PUBLIC_HOSTNAME}}/tou.html"
+    "websiteUrl": "https://eagerly-expert-jaybird.ngrok-free.app",
+    "privacyUrl": "https://eagerly-expert-jaybird.ngrok-free.app/privacy.html",
+    "termsOfUseUrl": "https://eagerly-expert-jaybird.ngrok-free.app/tou.html"
   },
   "name": {
     "short": "Archiver",
@@ -28,7 +28,7 @@
     {
       "entityId": "3b475d03-ce49-47d5-a0a9-61f40142cdad",
       "name": "Archive",
-      "contentUrl": "https://{{PUBLIC_HOSTNAME}}/archiveTab/?name={loginHint}&tenant={tid}&theme={theme}",
+      "contentUrl": "https://eagerly-expert-jaybird.ngrok-free.app/archiveTab/?name={loginHint}&tenant={tid}&theme={theme}",
       "scopes": [
         "personal"
       ]
@@ -64,12 +64,12 @@
     "messageTeamMembers"
   ],
   "validDomains": [
-    "{{PUBLIC_HOSTNAME}}",
+    "eagerly-expert-jaybird.ngrok-free.app",
     "token.botframework.com"
   ],
   "showLoadingIndicator": true,
   "webApplicationInfo": {
     "id": "79b4a6ff-2517-4f02-b70e-ef31ab65677b",
-    "resource": "{{TAB_APP_URI}}"
+    "resource": "api://eagerly-expert-jaybird.ngrok-free.app/79b4a6ff-2517-4f02-b70e-ef31ab65677b"
   }
 }

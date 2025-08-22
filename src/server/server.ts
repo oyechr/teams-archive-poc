@@ -107,8 +107,12 @@ app.post("/api/messages", async (req, res) => {
 
 // Endpoint to mark a thread for archive (called by bot)
 app.post("/api/markForArchive", async (req, res) => {
-  const { messagePayload } = req.body;
-  flaggedThreads.push(messagePayload); // Store in memory
+  const { messagePayload, replies } = req.body; 
+  flaggedThreads.push({
+    chatId: messagePayload.id,
+    metadata: messagePayload.metadata || {},
+    chatHistory: [messagePayload, ...(replies || [])], // Store root + replies
+  });
   res.json({ status: "success" });
 });
 
@@ -157,14 +161,14 @@ app.post("/api/graph/users/:userId/presence", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-app.post("/api/markForArchive", async (req, res) => {
-  const { messagePayload } = req.body;
-  // Store the thread/message in database or in-memory store?
-  // For poc, just log and return success
-  console.log("Marked for archive:", messagePayload);
-  // TODO: Save to persistent storage
-  res.json({ status: "success" });
-});
+// app.post("/api/markForArchive", async (req, res) => {
+//   const { messagePayload } = req.body;
+//   // Store the thread/message in database or in-memory store?
+//   // For poc, just log and return success
+//   console.log("Marked for archive:", messagePayload);
+//   // TODO: Save to persistent storage
+//   res.json({ status: "success" });
+// });
 
 app.use(
   "/",

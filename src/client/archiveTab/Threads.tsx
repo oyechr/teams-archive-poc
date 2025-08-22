@@ -11,9 +11,10 @@ import { ArchiveSidebar, Metadata } from "./ArchiveSideBar";
 
 type ThreadsProps = {
   threads: any[];
+  theme?: string;
 };
 
-export const Threads: React.FC<ThreadsProps> = ({ threads }) => {
+export const Threads: React.FC<ThreadsProps> = ({ threads, theme = "default" }) => {
   const [archivedThreads, setArchivedThreads] = React.useState<string[]>([]);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
   const [selectedThreadIdx, setSelectedThreadIdx] = React.useState<
@@ -110,7 +111,7 @@ export const Threads: React.FC<ThreadsProps> = ({ threads }) => {
                     setArchivedThreads(prev => prev.filter(id => id !== idx.toString()));
                   }}
                   chatId={thread.id || idx.toString()}
-                  chatHistory={thread.history || []}
+                  chatHistory={thread|| []}
                   metadata={
                     metadata[idx] || {
                       caseNumber: "",
@@ -123,7 +124,7 @@ export const Threads: React.FC<ThreadsProps> = ({ threads }) => {
                   onMetadataChange={(meta) =>
                     setMetadata((prev) => ({ ...prev, [idx]: meta }))
                   }
-                  theme={"default"}
+                  theme={theme}
                 />
               )}
             </div>
